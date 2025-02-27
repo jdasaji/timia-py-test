@@ -1,0 +1,55 @@
+name: Deploy to AWS Lambda with ECR
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 107340132840.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t my-lambda-image .
+          docker tag my-lambda-image 107340132840.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
+          docker push 107340132840.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
+
+      - name: Check if Lambda Function Exists and Create if Needed
+        run: |
+          FUNCTION_NAME="my-lambda-function"
+          IMAGE_URI="107340132840.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest"
+          ROLE_ARN="arn:aws:iam::107340132840:role/my-lambda-role"
+
+          if ! aws lambda get-function --function-name $FUNCTION_NAME; then
+            echo "La función no existe. Creándola..."
+            aws lambda create-function \
+              --function-name $FUNCTION_NAME \
+              --package-type Image \
+              --code ImageUri=$IMAGE_URI \
+              --role $ROLE_ARN \
+              --memory-size 512 \
+              --timeout 15
+          else
+            echo "La función ya existe."
+          fi
+
+      - name: Deploy Lambda
+        run: |
+          aws lambda update-function-code \
+            --function-name my-lambda-function \
+            --image-uri 107340132840.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest

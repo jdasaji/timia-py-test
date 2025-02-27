@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: my-lambda-function
+      PackageType: Image
+      ImageUri: <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
+      MemorySize: 128
+      Timeout: 10
+      Events:
+        ScheduledEvent:
+          Type: Schedule
+          Properties:
+            Schedule: rate(5 minutes)

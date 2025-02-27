@@ -1,0 +1,26 @@
+# Ejecutar Lambda Function localmente con Docker
+
+Este archivo explica cómo ejecutar una función Lambda localmente utilizando Docker y cómo interactuar con ella mediante `curl`.
+
+## 1. Configuración de Variables de Entorno
+
+Antes de ejecutar el contenedor Docker, asegúrate de tener configuradas las siguientes variables de entorno:
+
+- `AWS_ACCESS_KEY_ID`: Tu clave de acceso de AWS.
+- `AWS_SECRET_ACCESS_KEY`: Tu clave secreta de AWS.
+- `AWS_DEFAULT_REGION`: La región de AWS, por ejemplo, `us-east-1`.
+
+**Nota**: **No pongas las claves directamente en este archivo**. Usa las claves de acceso de AWS configuradas en tu entorno o a través de variables de entorno. Si usas un archivo `.env`, también puedes cargar estas variables automáticamente.
+
+## 2. Ejecutar el contenedor Docker
+
+Ejecuta el siguiente comando para iniciar el contenedor con las variables de entorno necesarias:
+
+```bash
+docker run -p 90:8080 -e AWS_ACCESS_KEY_ID=tu_clave_de_acceso -e AWS_SECRET_ACCESS_KEY=tu_clave_secreta -e AWS_DEFAULT_REGION=us-east-1 py-test-cid:v3
+# 2. Ejecutar una solicitud POST
+
+Puedes realizar una solicitud POST utilizando `curl` con el siguiente comando:
+
+```bash
+curl -X POST "http://localhost:90/2015-03-31/functions/function/invocations" --data "{\"key\": \"value\"}"
