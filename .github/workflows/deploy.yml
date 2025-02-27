@@ -55,7 +55,7 @@ jobs:
         run: |
           FUNCTION_NAME="my-lambda-function"
           IMAGE_URI="107340132840.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest"
-          ROLE_ARN="arn:aws:iam::107340132840:role/my-lambda-role"
+          ROLE_ARN="arn:aws:iam::107340132840:role/rol-lambda-call-functions"
 
           if ! aws lambda get-function --function-name $FUNCTION_NAME; then
             echo "La función no existe. Creándola..."
