@@ -14,7 +14,7 @@ jobs:
                 
       - name: Debug AWS Secrets
         run: |
-          echo "AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}"
+          echo "AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID} -"
           echo "AWS_SECRET_ACCESS_KEY length: ${#AWS_SECRET_ACCESS_KEY}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
