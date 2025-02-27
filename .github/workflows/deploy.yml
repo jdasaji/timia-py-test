@@ -40,7 +40,7 @@ jobs:
           if aws ecr describe-repositories --repository-names $REPO_NAME --region $AWS_REGION > /dev/null 2>&1; then
             echo "✅ Repositorio $REPO_NAME ya existe."
           else
-            echo "🚀 Repositorio no encontrado, creándolo ahora..."
+            echo "🚀 Repositor io no encontrado, creándolo ahora..."
             aws ecr create-repository --repository-name $REPO_NAME --region $AWS_REGION
             echo "✅ Repositorio $REPO_NAME creado exitosamente."
           fi
