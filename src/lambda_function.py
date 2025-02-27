@@ -56,6 +56,7 @@ def lambda_handler(event, context):
     with open(file_path, "w") as f:
         f.write(file_content)
 
+    #test
     # Crear cliente de S3
     s3 = boto3.client(
         's3',
