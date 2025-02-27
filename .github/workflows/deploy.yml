@@ -31,6 +31,20 @@ jobs:
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 107340132840.dkr.ecr.us-east-1.amazonaws.com
 
+      - name: Ensure ECR Repository Exists
+        run: |
+          REPO_NAME="my-lambda-image"
+          AWS_REGION="us-east-1"
+          
+          echo "📌 Verificando si el repositorio $REPO_NAME existe..."
+          if aws ecr describe-repositories --repository-names $REPO_NAME --region $AWS_REGION > /dev/null 2>&1; then
+            echo "✅ Repositorio $REPO_NAME ya existe."
+          else
+            echo "🚀 Repositorio no encontrado, creándolo ahora..."
+            aws ecr create-repository --repository-name $REPO_NAME --region $AWS_REGION
+            echo "✅ Repositorio $REPO_NAME creado exitosamente."
+          fi
+
       - name: Build and Push Docker Image
         run: |
           docker build -t my-lambda-image .
