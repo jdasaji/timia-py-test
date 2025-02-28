@@ -98,17 +98,23 @@ jobs:
             --region us-east-1
 
           echo "✅ Lambda function associated with the EventBridge rule."
-      - name: Add Permission for EventBridge to Invoke Lambda
+      - name: Add Permission for EventBridge to Invoke Lambda (Only if it doesn't exist)
         run: |
-          aws lambda add-permission \
-            --function-name my-lambda-function \
-            --principal events.amazonaws.com \
-            --statement-id "EventBridgeInvokePermission" \
-            --action "lambda:InvokeFunction" \
-            --source-arn "arn:aws:events:us-east-1:107340132840:rule/LambdaEveryMinuteEvent" \
-            --region us-east-1
-          
-          echo "✅ Permissions added for EventBridge to invoke the Lambda function."
-      
+          # Verificar si el permiso ya existe
+          PERMISSION_EXISTS=$(aws lambda get-policy --function-name my-lambda-function --region us-east-1 --query "Policy.Statement[?Sid=='EventBridgeInvokePermission']" --output text)
+
+          if [ "$PERMISSION_EXISTS" == "None" ]; then
+            # Si no existe, agregar el permiso
+            aws lambda add-permission \
+              --function-name my-lambda-function \
+              --principal events.amazonaws.com \
+              --statement-id "EventBridgeInvokePermission" \
+              --action "lambda:InvokeFunction" \
+              --source-arn "arn:aws:events:us-east-1:107340132840:rule/LambdaEveryMinuteEvent" \
+              --region us-east-1
+            echo "✅ Permissions added for EventBridge to invoke the Lambda function."
+          else
+            echo "El permiso ya existe, no es necesario agregarlo."
+          fi      
 
 
