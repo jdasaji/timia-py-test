@@ -74,4 +74,27 @@ jobs:
         run: |
           aws lambda update-function-code \
             --function-name my-lambda-function \
-            --image-uri 107340132840.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest
+            --image-uri 107340132840.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest     
+             
+      - name: Create EventBridge Rule to Trigger Lambda Every Minute
+              run: |
+                FUNCTION_NAME="my-lambda-function"  # Nombre de la función Lambda
+                EVENT_NAME="LambdaEveryMinuteEvent"
+                CRON_EXPRESSION="rate(1 minute)"
+
+                # Crear la regla de EventBridge que se ejecutará cada minuto
+                aws events put-rule \
+                  --name $EVENT_NAME \
+                  --schedule-expression "$CRON_EXPRESSION" \
+                  --state ENABLED \
+                  --region us-east-1
+                
+                echo "✅ EventBridge rule created to trigger Lambda every minute."
+
+                # Asociar la Lambda a la regla de EventBridge
+                aws events put-targets \
+                  --rule $EVENT_NAME \
+                  --targets "Id"="1","Arn"="arn:aws:lambda:us-east-1:107340132840:function:$FUNCTION_NAME" \
+                  --region us-east-1
+
+                echo "✅ Lambda function associated with the EventBridge rule."      
