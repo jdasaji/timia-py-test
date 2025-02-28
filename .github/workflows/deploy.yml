@@ -98,3 +98,17 @@ jobs:
             --region us-east-1
 
           echo "✅ Lambda function associated with the EventBridge rule."
+      - name: Add Permission for EventBridge to Invoke Lambda
+        run: |
+          aws lambda add-permission \
+            --function-name my-lambda-function \
+            --principal events.amazonaws.com \
+            --statement-id "EventBridgeInvokePermission" \
+            --action "lambda:InvokeFunction" \
+            --source-arn "arn:aws:events:us-east-1:107340132840:rule/LambdaEveryMinuteEvent" \
+            --region us-east-1
+          
+          echo "✅ Permissions added for EventBridge to invoke the Lambda function."
+      
+
+
