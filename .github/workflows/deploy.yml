@@ -100,7 +100,7 @@ jobs:
           echo "✅ Lambda function associated with the EventBridge rule."
       - name: Add Permission for EventBridge to Invoke Lambda (if not exists)
         run: |
-          # Verificar si el permiso ya existe
+          # Verificar si el permiso ya existe-
           PERMISSION_EXISTS=$(aws lambda get-policy --function-name my-lambda-function --region us-east-1 | grep -q "EventBridgeInvokePermission" && echo "true" || echo "false")
           
           if [ "$PERMISSION_EXISTS" == "false" ]; then
