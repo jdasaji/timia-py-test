@@ -75,7 +75,7 @@ jobs:
           aws lambda update-function-code \
             --function-name my-lambda-function \
             --image-uri 107340132840.dkr.ecr.us-east-1.amazonaws.com/my-lambda-image:latest     
-             
+                         
       - name: Create EventBridge Rule to Trigger Lambda Every Minute
               run: |
                 FUNCTION_NAME="my-lambda-function"  # Nombre de la función Lambda
